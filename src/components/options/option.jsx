@@ -1,126 +1,158 @@
-import React, { createRef, useEffect, useState } from 'react';
-import styles from './option.module.css';
+import { createRef, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Questions from '../../common/api/questionsApi/../questionsApi';
+import styles from './home.module2.css';
 
 const Options = () => {
-    const [loading, setLoading] = useState(false);
-    const [num, setNum] = useState(0);
-    const [currentSlide, setCurrentSlide] = useState(1);
-    const slideRef = createRef(null);
-    const TOTAL_SLIDES = 6;
     const history = useHistory();
-    const [mbti, setMbti] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+    const [inputValue2, setInputValue2] = useState('');
+    const [inputValue3, setInputValue3] = useState('');
+    const [inputValue4, setInputValue4] = useState('');
+    const [inputValue5, setInputValue5] = useState('');
 
-    const nextSlideFir = () => {
-        setMbti(mbti + Questions[num].answers[0].type);
-        setNum(num + 1);
-        setCurrentSlide(currentSlide + 1);
-        slideRef.current.style.transform += 'translateX(-100vw)';
-    };
-    const nextSlideSec = () => {
-        setMbti(mbti + Questions[num].answers[1].type);
-        setNum(num + 1);
-        setCurrentSlide(currentSlide + 1);
-        slideRef.current.style.transform += 'translateX(-100vw)';
+    const handleChange1 = (e) => {
+        setInputValue(e.target.value);
     };
 
-    const mbtiChecker = () => {
-        setLoading(true);
-        let map = {};
-        let result = [];
-        for (let i = 0; i < mbti.length; i++) {
-            if (mbti[i] in map) {
-                map[mbti[i]] += 1;
-            } else {
-                map[mbti[i]] = 1;
+    const handleChange2 = (e) => {
+        setInputValue2(e.target.value);
+    };
+
+    const handleChange3 = (e) => {
+        setInputValue3(e.target.value);
+    };
+
+    const handleChange4 = (e) => {
+        setInputValue4(e.target.value);
+    };
+
+    const handleChange5 = (e) => {
+        setInputValue5(e.target.value);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        postData();
+    };
+
+    const postData = async () => {
+        const url = 'http://127.0.0.1:8000/';
+        const data = new FormData();
+        data.append('A', inputValue);
+        data.append('B', inputValue2);
+        data.append('C', inputValue3);
+        data.append('D', inputValue4);
+        data.append('E', inputValue5);
+        console.log(data);
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: data,
+            });
+
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error:', errorResponse);
+                return;
             }
-        }
-        for (let count in map) {
-            if (map[count] >= 2) {
-                result.push(count);
-            }
-        }
+            const prediction = await response.json();
+            console.log(prediction);
+            var first_value = parseFloat(
+                prediction[Object.keys(prediction)[0]]
+            );
 
-        setTimeout(() => {
-            const examResult = result.join('');
-            history.push(`/result/${examResult}`);
-        }, 6000);
+            console.log('First Value:', first_value);
+            console.log('Type of First Value:', typeof first_value);
+
+            if (first_value === 3) {
+                const examResult = '3';
+                console.log('3');
+                history.push(`/${examResult}`);
+            } else if (first_value === 2) {
+                const examResult = '2';
+                console.log('2');
+                history.push(`/${examResult}`);
+            } else if (first_value === 1) {
+                console.log('1');
+                const examResult = '1';
+                history.push(`/${examResult}`);
+            } else if (first_value === 0) {
+                console.log('0');
+                const examResult = '0';
+                history.push(`/${examResult}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
-    useEffect(() => {
-        currentSlide > TOTAL_SLIDES && mbtiChecker();
-    }, [currentSlide]);
 
     return (
-        <>
-            <section className={styles.container}>
-                {!loading && (
-                    <>
-                        <div className={styles.slider} ref={slideRef}>
-                            {Questions.map((item) => {
-                                return (
-                                    <div
-                                        className={styles.content}
-                                        key={item.id}
-                                    >
-                                        <div className={styles.top}>
-                                            <div
-                                                className={styles.mbti__counter}
-                                            >
-                                                <span
-                                                    className={
-                                                        styles.mbti__progress__color
-                                                    }
-                                                >
-                                                    {currentSlide}
-                                                </span>
-                                                <span
-                                                    className={
-                                                        styles.mbti__end__color
-                                                    }
-                                                >
-                                                    /{TOTAL_SLIDES}
-                                                </span>
-                                            </div>
-                                            <h1
-                                                className={
-                                                    styles.mbti__question
-                                                }
-                                            >
-                                                {item.question}
-                                            </h1>
-                                        </div>
-                                        <article
-                                            className={styles.mbti__btn__box}
-                                        >
-                                            <input
-                                                type="number"
-                                                pattern="[0-9]+"
-                                            ></input>
-                                            <input
-                                                type="submit"
-                                                onClick={nextSlideFir}
-                                                className={styles.mbti__summit}
-                                            ></input>
-                                        </article>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </>
-                )}
-                {loading && (
-                    <div className={styles.loading__container}>
-                        <img
-                            className={styles.ticket}
-                            src="img/loading.png"
-                            alt="loading"
+        <body>
+            <div className="wrapper">
+                <section>
+                    <form onSubmit={handleSubmit}>
+                        <h1 className="text">
+                            {' '}
+                            지난 한 달 간 배달 서비스 사용일수는?{' '}
+                        </h1>
+                        <input
+                            className="input"
+                            type="number"
+                            pattern="[0-9]+"
+                            value={inputValue}
+                            onChange={handleChange1}
                         />
-                        <div className={styles.loading}></div>
-                    </div>
-                )}
-            </section>
-        </>
+                        <h1 className="text">
+                            {' '}
+                            지난 한 달 간 밤에 집 밖에 나간 횟수는?{' '}
+                        </h1>
+                        <input
+                            className="input"
+                            type="number"
+                            pattern="[0-9]+"
+                            value={inputValue2}
+                            onChange={handleChange2}
+                        />
+                        <h1 className="text">
+                            지난 한 달 간 낮 시간에 집 밖에 나간 횟수는?
+                        </h1>
+                        <input
+                            className="input"
+                            type="number"
+                            pattern="[0-9]+"
+                            value={inputValue3}
+                            onChange={handleChange3}
+                        />
+                        <h1 className="text">
+                            지난 한 달 간 휴일에 어디론가 이동한 횟수는?
+                        </h1>
+                        <input
+                            className="input"
+                            type="number"
+                            pattern="[0-9]+"
+                            value={inputValue4}
+                            onChange={handleChange4}
+                        />
+                        <h1 className="text">
+                            지난 한 달 간 지하철로 이동한 횟수는?
+                        </h1>
+                        <input
+                            className="input"
+                            type="number"
+                            pattern="[0-9]+"
+                            value={inputValue5}
+                            onChange={handleChange5}
+                        />
+                        <input
+                            type="submit"
+                            value="확인하기"
+                            className="start__button"
+                        />
+                    </form>
+                </section>
+            </div>
+        </body>
     );
 };
 

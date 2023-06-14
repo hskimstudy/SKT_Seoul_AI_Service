@@ -8,11 +8,12 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import KakaoBtn from '../shareSNS/kakaoShareButton';
 import FacebookBtn from '../shareSNS/facebookShareButton';
 import TwitterBtn from '../shareSNS/twitterShareButton';
+import Options from '../options/option';
 
 const Profile = ({ match }) => {
     const url = window.location.href;
     const { countryName } = match.params;
-    const nation = Countries[countryName];
+    const nation = [countryName];
 
     if (!nation) {
         return <div>존재하지 않는 결과입니다.</div>;

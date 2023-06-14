@@ -18,21 +18,19 @@ const Home = () => {
             <div className={styles.wrapper}>
                 <div className={styles.container}>
                     <div className={styles.top}>
-                        <img
-                            className={styles.logo}
-                            src="img/logo.png"
-                            alt="로고"
-                        />
+                        <img src={require('./logofi.png')} />
                     </div>
                     <div className={styles.middle}>
                         <h2 className={styles.header}>
-                            지금, 20대들은 어떻게 살고 있을까?
+                            지금, MZ는 어떻게 살고 있을까?
                         </h2>
-                        <p>내가 궁금하고 또 궁금한 20대를 위한 인싸력 분석기</p>
-                        <p>인공지능 기반 인싸력, 지금 확인!</p>
+                        <p>
+                            내가 궁금하고 또 궁금한 20대를 위한 관계 유형 분석기
+                        </p>
+                        <p>인공지능 기반 관계 유형 분석, 지금 확인!</p>
                     </div>
                     <div className={styles.bottom}>
-                        <Link to="/tripMBTI" className={styles.start__button}>
+                        <Link to="/MBTI" className={styles.start__button}>
                             테스트 하기
                             <FontAwesomeIcon
                                 icon={faArrowAltCircleRight}
